@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="text-center text-white">Cosa vuoi Verificare?</h2>
+
+<div class="card">
+    <div class="row">
+        <div class="col-md-6 d-flex flex-column justify-content-around">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <button class="btn btn-primary w-100" id="ordiniEvasi">Visualizza gli ordini evasi</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <label for="date" class="form-label d-block">Seleziona Data</label>
+                    <div class="d-flex justify-content-center">
+                        <input type="date" class="form-control mb-2" name="date" id="dateField" style="width: auto;" />
+                    </div>
+                    <button class="btn btn-secondary w-100" id="GuadagnoGiornaliero">Visualizza il Totale Incassato alla Data selezionata</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header fs-4">Ordini Evasi</div>
+                <ul class="list-group list-group-flush" id="listaOrdiniEvasi">
+                    
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header fs-4">Totale Incassato</div>
+                <ul class="list-group list-group-flush" id="totGuadagnato">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#ordiniEvasi").click(function () {
+                $("#listaOrdiniEvasi").empty();
+                $.ajax({
+                    method: 'GET',
+                    url: "Query/GetOrdiniEvasi",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            var licurrent = "<li>" +
+                                "DataPrenotazione: #" + v.Data + "<br>" +
+                                "Indirizzo: " + v.Indirizzo + "<br>" +
+                                "Importo: €" + v.Importo + "<br>" +
+                                "</li>";
+                            $("#listaOrdiniEvasi").append(licurrent);
+                        });
+                    }
+                });
+            });
+
+            $("#GuadagnoGiornaliero").click(function () {
+                $("#totGuadagnato").empty();
+                var date = $("#dateField").val();
+                $.ajax({
+                    method: 'GET',
+                    url: "Query/GetTotGuadagnato",
+                    data: { date: date },
+                    success: function (data) {
+                        var licurrent = "<li>" +
+                            "Totale Guadagnato: €" + data +
+                            "</li>";
+                        $("#totGuadagnato").append(licurrent);
+                    }
+                });
+            });
+        });
+    </script>
+}
